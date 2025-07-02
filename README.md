@@ -25,7 +25,9 @@ A comprehensive e-commerce solution for bicycle customization with dynamic prici
 
 ## 🚀 Live Demo
 
-🔗 **[View Live Demo](https://bicycle-shop-ecommerce.vercel.app)** *(Deploy to see this link)*
+🔗 **[View Live Demo](https://bicycle-shop-ecommerce-c4wf113sn.vercel.app)** 
+
+✨ **Fully functional e-commerce platform with real-time bicycle customization!**
 
 ## 🛠️ Technology Stack
 
@@ -166,7 +168,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Federico Javier Martino**
 - GitHub: [@Federicojaviermartino](https://github.com/Federicojaviermartino)
-- LinkedIn: [Your LinkedIn Profile](https://linkedin.com/in/your-profile)
 
 ## 🙏 Acknowledgments
 
@@ -174,7 +175,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - React best practices and performance optimization
 - TypeScript for robust development experience
 - Vite for blazing fast development
-
----
-
-⭐ **Star this repository if you found it useful!**
