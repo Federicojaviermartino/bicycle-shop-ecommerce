@@ -23,10 +23,6 @@ A comprehensive e-commerce solution for bicycle customization with dynamic prici
 - **Business Constraints**: Define compatibility and restriction rules
 - **Extensible Design**: Easy addition of new product categories
 
-## 🚀 Live Demo
-
-🔗 **[View Live Demo](https://bicycle-shop-ecommerce.vercel.app)** *(Deploy to see this link)*
-
 ## 🛠️ Technology Stack
 
 - **Frontend**: React 18, TypeScript, Vite
