@@ -166,7 +166,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Federico Javier Martino**
 - GitHub: [@Federicojaviermartino](https://github.com/Federicojaviermartino)
-- LinkedIn: [Your LinkedIn Profile](https://linkedin.com/in/your-profile)
 
 ## 🙏 Acknowledgments
 
@@ -174,7 +173,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - React best practices and performance optimization
 - TypeScript for robust development experience
 - Vite for blazing fast development
-
----
-
-⭐ **Star this repository if you found it useful!**
