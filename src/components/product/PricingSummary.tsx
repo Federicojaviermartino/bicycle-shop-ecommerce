@@ -4,7 +4,11 @@ interface PricingSummaryProps {
   onAddToCart: () => void;
   isAddingToCart?: boolean;
 }
-export function PricingSummary({ validation, onAddToCart, isAddingToCart = false }: PricingSummaryProps) {
+export function PricingSummary({
+  validation,
+  onAddToCart,
+  isAddingToCart = false,
+}: PricingSummaryProps) {
   return (
     <div className="pricing-summary">
       <div className="pricing-summary__content">
@@ -34,9 +38,7 @@ export function PricingSummary({ validation, onAddToCart, isAddingToCart = false
           </button>
         </div>
         {validation.isValid && (
-          <div className="pricing-summary__valid">
-            ✓ Configuration is valid and ready to order
-          </div>
+          <div className="pricing-summary__valid">✓ Configuration is valid and ready to order</div>
         )}
       </div>
     </div>

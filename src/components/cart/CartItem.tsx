@@ -1,1 +1,57 @@
-import React from 'react';import type { CartItem } from '../../types';interface CartItemComponentProps {  item: CartItem;  onUpdateQuantity: (itemId: string, quantity: number) => void;  onRemove: (itemId: string) => void;}export function CartItemComponent({ item, onUpdateQuantity, onRemove }: CartItemComponentProps) {  const handleQuantityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {    const newQuantity = parseInt(e.target.value);    onUpdateQuantity(item.id, newQuantity);  };  return (    <div className="cart-item">      <div className="cart-item__details">        <h3 className="cart-item__product-name">{item.product.name}</h3>        <div className="cart-item__configuration">          <h4>Configuration:</h4>          <ul className="cart-item__selections">            {item.configuration.selections.map((selection, index) => (              <li key={index} className="cart-item__selection">                {}                Part: {selection.partTypeId} - Option: {selection.partOptionId}              </li>            ))}          </ul>        </div>        <div className="cart-item__pricing">          <div className="cart-item__unit-price">            Unit Price: €{item.unitPrice.toFixed(2)}          </div>          <div className="cart-item__total-price">            Total: €{item.totalPrice.toFixed(2)}          </div>        </div>      </div>      <div className="cart-item__controls">        <div className="cart-item__quantity">          <label htmlFor={`quantity-${item.id}`}>Quantity:</label>          <select            id={`quantity-${item.id}`}            value={item.quantity}            onChange={handleQuantityChange}            className="cart-item__quantity-select"          >            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (              <option key={num} value={num}>{num}</option>            ))}          </select>        </div>        <button          onClick={() => onRemove(item.id)}          className="cart-item__remove btn btn--secondary"        >          Remove        </button>      </div>    </div>  );}
+import type { ChangeEvent } from 'react';
+import type { CartItem } from '../../types';
+
+interface CartItemComponentProps {
+  item: CartItem;
+  onUpdateQuantity: (itemId: string, quantity: number) => void;
+  onRemove: (itemId: string) => void;
+}
+
+export function CartItemComponent({ item, onUpdateQuantity, onRemove }: CartItemComponentProps) {
+  const handleQuantityChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const newQuantity = parseInt(e.target.value);
+    onUpdateQuantity(item.id, newQuantity);
+  };
+
+  return (
+    <div className="cart-item">
+      <div className="cart-item__details">
+        <h3 className="cart-item__product-name">{item.product.name}</h3>
+        <div className="cart-item__configuration">
+          <h4>Configuration:</h4>
+          <ul className="cart-item__selections">
+            {item.configuration.selections.map((selection, index) => (
+              <li key={index} className="cart-item__selection">
+                Part: {selection.partTypeId} - Option: {selection.partOptionId}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="cart-item__pricing">
+          <div className="cart-item__unit-price">Unit Price: €{item.unitPrice.toFixed(2)}</div>
+          <div className="cart-item__total-price">Total: €{item.totalPrice.toFixed(2)}</div>
+        </div>
+      </div>
+      <div className="cart-item__controls">
+        <div className="cart-item__quantity">
+          <label htmlFor={`quantity-${item.id}`}>Quantity:</label>
+          <select
+            id={`quantity-${item.id}`}
+            value={item.quantity}
+            onChange={handleQuantityChange}
+            className="cart-item__quantity-select"
+          >
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+              <option key={num} value={num}>
+                {num}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button onClick={() => onRemove(item.id)} className="cart-item__remove btn btn--secondary">
+          Remove
+        </button>
+      </div>
+    </div>
+  );
+}

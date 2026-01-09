@@ -1,1 +1,147 @@
-import type { Product, PartType, PartOption, ConfigurationSelection, ProductConfiguration, Cart, ApiResponse, ConfigurationValidation } from '../types';import { mockApiService } from './mockApi';const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API !== 'false'; // Default to true for developmentclass ApiService {    private async request<T>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {        try {            const response = await fetch(`${API_BASE_URL}${endpoint}`, {                headers: {                    'Content-Type': 'application/json',                    ...options?.headers,                },                ...options,            });            const data = await response.json();            if (!response.ok) {                return { success: false, error: data.message || 'An error occurred' };            }            return { success: true, data };        } catch (error) {            return {                success: false,                error: error instanceof Error ? error.message : 'Network error'            };        }    }    async getProducts(): Promise<ApiResponse<Product[]>> {        if (USE_MOCK_API) {            return { success: true, data: [] }; // Mock doesn't implement this yet        }        return this.request<Product[]>('/products');    }    async getProduct(id: string): Promise<ApiResponse<Product>> {        if (USE_MOCK_API) {            return mockApiService.getProduct(id);        }        return this.request<Product>(`/products/${id}`);    }    async getPartTypes(categoryId: string): Promise<ApiResponse<PartType[]>> {        if (USE_MOCK_API) {            return mockApiService.getPartTypes(categoryId);        }        return this.request<PartType[]>(`/part-types?categoryId=${categoryId}`);    }    async getPartOptions(partTypeId: string, currentSelections?: ConfigurationSelection[]): Promise<ApiResponse<PartOption[]>> {        if (USE_MOCK_API) {            return mockApiService.getPartOptions(partTypeId, currentSelections);        }        const query = currentSelections            ? `?selections=${encodeURIComponent(JSON.stringify(currentSelections))}`            : '';        return this.request<PartOption[]>(`/part-options/${partTypeId}${query}`);    }    async validateConfiguration(        productId: string,        selections: ConfigurationSelection[]    ): Promise<ApiResponse<ConfigurationValidation>> {        if (USE_MOCK_API) {            return mockApiService.validateConfiguration(productId, selections);        }        return this.request<ConfigurationValidation>('/configurations/validate', {            method: 'POST',            body: JSON.stringify({ productId, selections }),        });    }    async createConfiguration(        productId: string,        selections: ConfigurationSelection[]    ): Promise<ApiResponse<ProductConfiguration>> {        if (USE_MOCK_API) {            return mockApiService.createConfiguration(productId, selections);        }        return this.request<ProductConfiguration>('/configurations', {            method: 'POST',            body: JSON.stringify({ productId, selections }),        });    }    async getCart(cartId: string): Promise<ApiResponse<Cart>> {        if (USE_MOCK_API) {            return mockApiService.getCart(cartId);        }        return this.request<Cart>(`/cart/${cartId}`);    }    async addToCart(        cartId: string,        configurationId: string,        quantity: number = 1    ): Promise<ApiResponse<Cart>> {        if (USE_MOCK_API) {            return mockApiService.addToCart(cartId, configurationId, quantity);        }        return this.request<Cart>(`/cart/${cartId}/items`, {            method: 'POST',            body: JSON.stringify({ configurationId, quantity }),        });    }    async updateCartItem(        cartId: string,        itemId: string,        quantity: number    ): Promise<ApiResponse<Cart>> {        if (USE_MOCK_API) {            return mockApiService.updateCartItem(cartId, itemId, quantity);        }        return this.request<Cart>(`/cart/${cartId}/items/${itemId}`, {            method: 'PUT',            body: JSON.stringify({ quantity }),        });    }    async removeCartItem(cartId: string, itemId: string): Promise<ApiResponse<Cart>> {        if (USE_MOCK_API) {            return mockApiService.removeCartItem(cartId, itemId);        }        return this.request<Cart>(`/cart/${cartId}/items/${itemId}`, {            method: 'DELETE',        });    }}export const apiService = new ApiService();
+import type {
+  Product,
+  PartType,
+  PartOption,
+  ConfigurationSelection,
+  ProductConfiguration,
+  Cart,
+  ApiResponse,
+  ConfigurationValidation,
+} from '../types';
+import { mockApiService } from './mockApi';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API !== 'false';
+
+class ApiService {
+  private async request<T>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...options?.headers,
+        },
+        ...options,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { success: false, error: data.message || 'An error occurred' };
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Network error',
+      };
+    }
+  }
+
+  async getProducts(): Promise<ApiResponse<Product[]>> {
+    if (USE_MOCK_API) {
+      return { success: true, data: [] };
+    }
+    return this.request<Product[]>('/products');
+  }
+
+  async getProduct(id: string): Promise<ApiResponse<Product>> {
+    if (USE_MOCK_API) {
+      return mockApiService.getProduct(id);
+    }
+    return this.request<Product>(`/products/${id}`);
+  }
+
+  async getPartTypes(categoryId: string): Promise<ApiResponse<PartType[]>> {
+    if (USE_MOCK_API) {
+      return mockApiService.getPartTypes(categoryId);
+    }
+    return this.request<PartType[]>(`/part-types?categoryId=${categoryId}`);
+  }
+
+  async getPartOptions(
+    partTypeId: string,
+    currentSelections?: ConfigurationSelection[]
+  ): Promise<ApiResponse<PartOption[]>> {
+    if (USE_MOCK_API) {
+      return mockApiService.getPartOptions(partTypeId, currentSelections);
+    }
+    const query = currentSelections
+      ? `?selections=${encodeURIComponent(JSON.stringify(currentSelections))}`
+      : '';
+    return this.request<PartOption[]>(`/part-options/${partTypeId}${query}`);
+  }
+
+  async validateConfiguration(
+    productId: string,
+    selections: ConfigurationSelection[]
+  ): Promise<ApiResponse<ConfigurationValidation>> {
+    if (USE_MOCK_API) {
+      return mockApiService.validateConfiguration(productId, selections);
+    }
+    return this.request<ConfigurationValidation>('/configurations/validate', {
+      method: 'POST',
+      body: JSON.stringify({ productId, selections }),
+    });
+  }
+
+  async createConfiguration(
+    productId: string,
+    selections: ConfigurationSelection[]
+  ): Promise<ApiResponse<ProductConfiguration>> {
+    if (USE_MOCK_API) {
+      return mockApiService.createConfiguration(productId, selections);
+    }
+    return this.request<ProductConfiguration>('/configurations', {
+      method: 'POST',
+      body: JSON.stringify({ productId, selections }),
+    });
+  }
+
+  async getCart(cartId: string): Promise<ApiResponse<Cart>> {
+    if (USE_MOCK_API) {
+      return mockApiService.getCart(cartId);
+    }
+    return this.request<Cart>(`/cart/${cartId}`);
+  }
+
+  async addToCart(
+    cartId: string,
+    configurationId: string,
+    quantity: number = 1
+  ): Promise<ApiResponse<Cart>> {
+    if (USE_MOCK_API) {
+      return mockApiService.addToCart(cartId, configurationId, quantity);
+    }
+    return this.request<Cart>(`/cart/${cartId}/items`, {
+      method: 'POST',
+      body: JSON.stringify({ configurationId, quantity }),
+    });
+  }
+
+  async updateCartItem(
+    cartId: string,
+    itemId: string,
+    quantity: number
+  ): Promise<ApiResponse<Cart>> {
+    if (USE_MOCK_API) {
+      return mockApiService.updateCartItem(cartId, itemId, quantity);
+    }
+    return this.request<Cart>(`/cart/${cartId}/items/${itemId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ quantity }),
+    });
+  }
+
+  async removeCartItem(cartId: string, itemId: string): Promise<ApiResponse<Cart>> {
+    if (USE_MOCK_API) {
+      return mockApiService.removeCartItem(cartId, itemId);
+    }
+    return this.request<Cart>(`/cart/${cartId}/items/${itemId}`, {
+      method: 'DELETE',
+    });
+  }
+}
+
+export const apiService = new ApiService();

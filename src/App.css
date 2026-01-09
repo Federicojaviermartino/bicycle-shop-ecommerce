@@ -23,7 +23,13 @@
 
 body {
   margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'Roboto',
+    sans-serif;
   background-color: var(--background-color);
   color: var(--text-primary);
   line-height: 1.6;
@@ -78,6 +84,32 @@ body {
 .app__cart-button:hover {
   background: rgba(255, 255, 255, 0.3);
   border-color: rgba(255, 255, 255, 0.5);
+}
+
+.app__header-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.app__cart-button--with-badge {
+  position: relative;
+}
+
+.app__cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--error-color);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
 }
 
 /* Main content */
@@ -256,7 +288,7 @@ body {
   margin-top: 0.25rem;
 }
 
-.part-option__selector input[type="radio"] {
+.part-option__selector input[type='radio'] {
   width: 20px;
   height: 20px;
   accent-color: var(--primary-color);
@@ -834,7 +866,7 @@ body {
 }
 
 /* Admin Modal Styles */
-.admin-modal {
+.admin-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -845,6 +877,18 @@ body {
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.admin-modal {
+  background: var(--surface-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow: auto;
 }
 
 .admin-modal__backdrop {
@@ -995,6 +1039,78 @@ body {
   cursor: not-allowed;
 }
 
+/* Admin Modal Form Styles */
+.admin-modal__form {
+  padding: 1.5rem;
+}
+
+.admin-modal__actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.admin-modal__btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-modal__btn--cancel {
+  background: var(--surface-color);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.admin-modal__btn--cancel:hover {
+  background: var(--background-color);
+}
+
+.admin-modal__btn--save {
+  background: var(--primary-color);
+  color: white;
+}
+
+.admin-modal__btn--save:hover {
+  background: var(--primary-hover);
+}
+
+/* Admin table text styles */
+.admin-table__primary-text {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.admin-table__secondary-text {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+.admin-table__status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.admin-table__status-badge.active {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success-color);
+}
+
+.admin-table__status-badge.inactive {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error-color);
+}
+
 /* Additional Admin UI Elements */
 .admin-content__filter-select {
   background: var(--surface-color);
@@ -1099,48 +1215,297 @@ body {
   .admin-dashboard__nav {
     padding: 0;
   }
-  
+
   .admin-dashboard__tab {
     padding: 0.75rem 1rem;
     font-size: 0.8rem;
   }
-  
+
   .admin-dashboard__main {
     padding: 1rem;
   }
-  
+
   .admin-content__header {
     flex-direction: column;
     gap: 1rem;
     align-items: stretch;
   }
-  
+
   .admin-content__body {
     padding: 1rem;
   }
-  
+
   .admin-table__actions {
     flex-direction: column;
   }
-  
+
   .admin-modal {
     padding: 0.5rem;
   }
-  
+
   .admin-form {
     padding: 1.5rem;
   }
-  
+
   .admin-form__row {
     grid-template-columns: 1fr;
   }
-  
+
   .admin-content__actions {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .admin-table__conditions {
     flex-direction: column;
+  }
+}
+
+/* Error Boundary */
+.error-boundary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 2rem;
+}
+
+.error-boundary__content {
+  text-align: center;
+  max-width: 500px;
+}
+
+.error-boundary__title {
+  font-size: 1.5rem;
+  color: var(--error-color);
+  margin-bottom: 1rem;
+}
+
+.error-boundary__message {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* Responsive Styles - Desktop First */
+
+/* Large screens (1024px and up) */
+@media (min-width: 1024px) {
+  .admin-dashboard__main {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+}
+
+/* Tablet screens (768px - 1023px) */
+@media (max-width: 1023px) {
+  .product-configurator__main {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .product-configurator__sidebar {
+    border-left: none;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .pricing-summary {
+    position: static;
+  }
+
+  .app__header-content {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .admin-dashboard__header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+}
+
+/* Mobile screens (767px and below) */
+@media (max-width: 767px) {
+  .app__header {
+    padding: 1rem 0;
+  }
+
+  .app__title {
+    font-size: 1.5rem;
+  }
+
+  .app__subtitle {
+    font-size: 0.9rem;
+  }
+
+  .app__header-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .app__cart-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .app__main {
+    padding: 1rem;
+  }
+
+  .app__intro {
+    margin-bottom: 1.5rem;
+  }
+
+  .app__intro h2 {
+    font-size: 1.25rem;
+  }
+
+  .app__intro p {
+    font-size: 0.9rem;
+  }
+
+  .product-configurator__parts {
+    padding: 1rem;
+  }
+
+  .product-configurator__parts h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .product-configurator__sidebar {
+    padding: 1rem;
+  }
+
+  .part-selector {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .part-selector__title {
+    font-size: 1.1rem;
+  }
+
+  .part-option {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .part-option__content {
+    width: 100%;
+  }
+
+  .part-option__selector {
+    align-self: flex-end;
+  }
+
+  .shopping-cart {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .shopping-cart__header {
+    padding: 1rem;
+  }
+
+  .shopping-cart__header h2 {
+    font-size: 1.25rem;
+  }
+
+  .cart-item {
+    padding: 1rem;
+  }
+
+  .cart-item__controls {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+
+  .cart-item__quantity {
+    justify-content: space-between;
+  }
+
+  .cart-item__remove {
+    width: 100%;
+    text-align: center;
+  }
+
+  .shopping-cart__actions {
+    flex-direction: column;
+  }
+
+  /* Admin Mobile Overrides */
+  .admin-dashboard__header {
+    padding: 1rem;
+  }
+
+  .admin-dashboard__title {
+    font-size: 1.25rem;
+  }
+
+  .admin-dashboard__subtitle {
+    font-size: 0.85rem;
+  }
+
+  .admin-modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .admin-modal {
+    max-width: 100%;
+    max-height: 90vh;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    width: 100%;
+  }
+
+  .admin-modal__header {
+    padding: 1rem 1.25rem;
+    position: sticky;
+    top: 0;
+    background: var(--surface-color);
+    z-index: 1;
+  }
+
+  .admin-modal__title {
+    font-size: 1.1rem;
+  }
+
+  .admin-modal__form {
+    padding: 1.25rem;
+  }
+
+  .admin-form__group {
+    margin-bottom: 1rem;
+  }
+
+  .admin-form__input,
+  .admin-form__textarea,
+  .admin-form__select {
+    padding: 0.625rem;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .admin-form__actions,
+  .admin-modal__actions {
+    flex-direction: column;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+  }
+
+  .admin-form__btn,
+  .admin-modal__btn {
+    width: 100%;
+    padding: 0.875rem;
   }
 }

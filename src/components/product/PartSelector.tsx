@@ -1,1 +1,91 @@
-import type { PartType, PartOption } from "../../types";interface PartSelectorProps {  partType: PartType;  options: PartOption[];  selectedOptionId: string | null;  onSelectionChange: (partTypeId: string, optionId: string) => void;}export function PartSelector({  partType,  options,  selectedOptionId,  onSelectionChange,}: PartSelectorProps) {  const availableOptions = options.filter(    (option) => option.isActive && option.inStock  );  return (    <div className="part-selector">      <div className="part-selector__header">        <h3 className="part-selector__title">          {partType.name}          {partType.isRequired && (            <span className="part-selector__required">*</span>          )}        </h3>        {partType.description && (          <p className="part-selector__description">{partType.description}</p>        )}      </div>      <div className="part-selector__options">        {availableOptions.length === 0 ? (          <p className="part-selector__no-options">No options available</p>        ) : (          availableOptions.map((option) => (            <div              key={option.id}              className={`part-option ${                selectedOptionId === option.id ? "part-option--selected" : ""              }`}              onClick={() => onSelectionChange(partType.id, option.id)}            >              <div className="part-option__content">                {option.imageUrl && (                  <img                    src={option.imageUrl}                    alt={option.name}                    className="part-option__image"                  />                )}                <div className="part-option__details">                  <h4 className="part-option__name">{option.name}</h4>                  {option.description && (                    <p className="part-option__description">                      {option.description}                    </p>                  )}                  <div className="part-option__price">                    +€{option.basePrice.toFixed(2)}                  </div>                  {option.stockCount !== undefined &&                    option.stockCount < 10 && (                      <div className="part-option__stock-warning">                        Only {option.stockCount} left in stock                      </div>                    )}                </div>              </div>              <div className="part-option__selector">                <input                  type="radio"                  name={`part-${partType.id}`}                  value={option.id}                  checked={selectedOptionId === option.id}                  onChange={() => onSelectionChange(partType.id, option.id)}                />              </div>            </div>          ))        )}      </div>      {options.some((option) => !option.inStock) && (        <div className="part-selector__out-of-stock">          <h4>Currently out of stock:</h4>          <ul>            {options              .filter((option) => !option.inStock)              .map((option) => (                <li key={option.id} className="out-of-stock-item">                  {option.name} - €{option.basePrice.toFixed(2)}                </li>              ))}          </ul>        </div>      )}    </div>  );}
+import type { PartType, PartOption } from '../../types';
+
+const LOW_STOCK_THRESHOLD = 10;
+
+interface PartSelectorProps {
+  partType: PartType;
+  options: PartOption[];
+  selectedOptionId: string | null;
+  onSelectionChange: (partTypeId: string, optionId: string) => void;
+}
+
+export function PartSelector({
+  partType,
+  options,
+  selectedOptionId,
+  onSelectionChange,
+}: PartSelectorProps) {
+  const availableOptions = options.filter((option) => option.isActive && option.inStock);
+
+  return (
+    <div className="part-selector">
+      <div className="part-selector__header">
+        <h3 className="part-selector__title">
+          {partType.name}
+          {partType.isRequired && <span className="part-selector__required">*</span>}
+        </h3>
+        {partType.description && (
+          <p className="part-selector__description">{partType.description}</p>
+        )}
+      </div>
+
+      <div className="part-selector__options">
+        {availableOptions.length === 0 ? (
+          <p className="part-selector__no-options">No options available</p>
+        ) : (
+          availableOptions.map((option) => (
+            <div
+              key={option.id}
+              className={`part-option ${
+                selectedOptionId === option.id ? 'part-option--selected' : ''
+              }`}
+              onClick={() => onSelectionChange(partType.id, option.id)}
+            >
+              <div className="part-option__content">
+                {option.imageUrl && (
+                  <img src={option.imageUrl} alt={option.name} className="part-option__image" />
+                )}
+                <div className="part-option__details">
+                  <h4 className="part-option__name">{option.name}</h4>
+                  {option.description && (
+                    <p className="part-option__description">{option.description}</p>
+                  )}
+                  <div className="part-option__price">+€{option.basePrice.toFixed(2)}</div>
+                  {option.stockCount !== undefined && option.stockCount < LOW_STOCK_THRESHOLD && (
+                    <div className="part-option__stock-warning">
+                      Only {option.stockCount} left in stock
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="part-option__selector">
+                <input
+                  type="radio"
+                  name={`part-${partType.id}`}
+                  value={option.id}
+                  checked={selectedOptionId === option.id}
+                  onChange={() => onSelectionChange(partType.id, option.id)}
+                />
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {options.some((option) => !option.inStock) && (
+        <div className="part-selector__out-of-stock">
+          <h4>Currently out of stock:</h4>
+          <ul>
+            {options
+              .filter((option) => !option.inStock)
+              .map((option) => (
+                <li key={option.id} className="out-of-stock-item">
+                  {option.name} - €{option.basePrice.toFixed(2)}
+                </li>
+              ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
