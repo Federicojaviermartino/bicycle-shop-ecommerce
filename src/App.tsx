@@ -1,11 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { ProductConfigurator } from './components/product/ProductConfigurator';
 import { ShoppingCart } from './components/cart/ShoppingCart';
-import { Checkout } from './components/checkout';
-import { AdminDashboard } from './components/admin/AdminDashboard';
-import { ErrorBoundary, toast } from './components/common';
+import { ErrorBoundary, toast, Spinner } from './components/common';
 import { apiService } from './services/api';
 import './App.css';
+
+const AdminDashboard = lazy(() => import('./components/admin/AdminDashboard'));
+const Checkout = lazy(() => import('./components/checkout/Checkout'));
 
 type AppView = 'customer' | 'admin';
 
@@ -82,7 +83,15 @@ function App() {
   if (currentView === 'admin') {
     return (
       <ErrorBoundary>
-        <AdminDashboard onBackToCustomer={() => setCurrentView('customer')} />
+        <Suspense
+          fallback={
+            <div className="app__loading">
+              <Spinner size="lg" />
+            </div>
+          }
+        >
+          <AdminDashboard onBackToCustomer={() => setCurrentView('customer')} />
+        </Suspense>
       </ErrorBoundary>
     );
   }
@@ -151,11 +160,19 @@ function App() {
           onProceedToCheckout={handleProceedToCheckout}
         />
         {isCheckoutVisible && (
-          <Checkout
-            cartId={cartId}
-            onClose={handleCheckoutClose}
-            onOrderComplete={handleOrderComplete}
-          />
+          <Suspense
+            fallback={
+              <div className="app__loading">
+                <Spinner size="lg" />
+              </div>
+            }
+          >
+            <Checkout
+              cartId={cartId}
+              onClose={handleCheckoutClose}
+              onOrderComplete={handleOrderComplete}
+            />
+          </Suspense>
         )}
         <footer className="app__footer">
           <p>&copy; 2025 Marcus's Bicycle Shop. Quality bicycles, built to order.</p>

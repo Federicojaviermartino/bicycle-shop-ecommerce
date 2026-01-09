@@ -91,3 +91,5 @@ export function AdminDashboard({ onBackToCustomer }: AdminDashboardProps) {
     </div>
   );
 }
+
+export default AdminDashboard;

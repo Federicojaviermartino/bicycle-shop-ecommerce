@@ -865,6 +865,14 @@ body {
   font-size: 0.875rem;
 }
 
+.app__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  width: 100%;
+}
+
 /* Footer */
 .app__footer {
   background: var(--text-primary);

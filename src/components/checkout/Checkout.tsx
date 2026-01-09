@@ -653,3 +653,5 @@ export function Checkout({ cartId, onClose, onOrderComplete }: CheckoutProps) {
     </div>
   );
 }
+
+export default Checkout;
