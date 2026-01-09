@@ -71,3 +71,22 @@ export interface ConfigurationValidation {
   errors: string[];
   totalPrice: number;
 }
+
+export interface PromoCode {
+  code: string;
+  type: 'percentage' | 'fixed';
+  value: number;
+  minOrderValue?: number;
+  maxUses?: number;
+  currentUses?: number;
+  expiresAt?: string;
+  isActive: boolean;
+  description?: string;
+}
+
+export interface PromoValidation {
+  isValid: boolean;
+  promoCode?: PromoCode;
+  discountAmount: number;
+  error?: string;
+}

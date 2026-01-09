@@ -14,6 +14,7 @@ export function ProductConfigurator({ productId, onAddToCart }: ProductConfigura
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const {
+    product,
     partTypes,
     selections,
     validation,
@@ -21,7 +22,19 @@ export function ProductConfigurator({ productId, onAddToCart }: ProductConfigura
     updateSelection,
     getSelectedOption,
     getAvailableOptions,
+    getSelectedOptionDetails,
   } = useProductConfiguration(productId);
+
+  const priceBreakdown = partTypes
+    .map((pt) => {
+      const option = getSelectedOptionDetails(pt.id);
+      return {
+        partTypeName: pt.name,
+        optionName: option?.name || null,
+        price: option?.basePrice || 0,
+      };
+    })
+    .filter((item) => item.optionName !== null);
 
   const handleAddToCart = async () => {
     if (!validation.isValid) return;
@@ -69,6 +82,9 @@ export function ProductConfigurator({ productId, onAddToCart }: ProductConfigura
             validation={validation}
             onAddToCart={handleAddToCart}
             isAddingToCart={isAddingToCart}
+            productName={product?.name}
+            basePrice={product?.basePrice || 0}
+            priceBreakdown={priceBreakdown}
           />
         </div>
       </div>

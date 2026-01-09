@@ -4,10 +4,12 @@ import type {
   PartType,
   PartOption,
   ConfigurationValidation,
+  Product,
 } from '../types';
 import { apiService } from '../services/api';
 
 export function useProductConfiguration(productId: string) {
+  const [product, setProduct] = useState<Product | null>(null);
   const [partTypes, setPartTypes] = useState<PartType[]>([]);
   const [partOptions, setPartOptions] = useState<Record<string, PartOption[]>>({});
   const [selections, setSelections] = useState<ConfigurationSelection[]>([]);
@@ -26,6 +28,7 @@ export function useProductConfiguration(productId: string) {
       try {
         const productResponse = await apiService.getProduct(productId);
         if (productResponse.success && productResponse.data) {
+          setProduct(productResponse.data);
           const partTypesResponse = await apiService.getPartTypes(productResponse.data.categoryId);
           if (partTypesResponse.success && partTypesResponse.data) {
             setPartTypes(partTypesResponse.data.sort((a, b) => a.displayOrder - b.displayOrder));
@@ -108,7 +111,15 @@ export function useProductConfiguration(productId: string) {
     return partOptions[partTypeId] || [];
   };
 
+  const getSelectedOptionDetails = (partTypeId: string): PartOption | null => {
+    const selection = selections.find((s) => s.partTypeId === partTypeId);
+    if (!selection) return null;
+    const options = partOptions[partTypeId] || [];
+    return options.find((o) => o.id === selection.partOptionId) || null;
+  };
+
   return {
+    product,
     partTypes,
     selections,
     validation,
@@ -117,5 +128,6 @@ export function useProductConfiguration(productId: string) {
     removeSelection,
     getSelectedOption,
     getAvailableOptions,
+    getSelectedOptionDetails,
   };
 }

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af"/>
+      <stop offset="100%" style="stop-color:#2563eb"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+
+  <g transform="translate(100, 200)">
+    <circle cx="80" cy="130" r="55" fill="none" stroke="#ffffff" stroke-width="8"/>
+    <circle cx="280" cy="130" r="55" fill="none" stroke="#ffffff" stroke-width="8"/>
+    <circle cx="80" cy="130" r="8" fill="#ffffff"/>
+    <circle cx="280" cy="130" r="8" fill="#ffffff"/>
+    <path d="M80 130 L140 40 L180 40 L280 130" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M140 40 L140 10 L155 -10" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+    <path d="M180 40 L80 130" fill="none" stroke="#ffffff" stroke-width="6"/>
+    <circle cx="160" cy="85" r="15" fill="none" stroke="#ffffff" stroke-width="4"/>
+    <path d="M160 85 L80 130" fill="none" stroke="#93c5fd" stroke-width="4"/>
+    <path d="M160 85 L280 130" fill="none" stroke="#93c5fd" stroke-width="4"/>
+    <ellipse cx="160" cy="5" rx="20" ry="8" fill="#ffffff"/>
+  </g>
+
+  <text x="480" y="280" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="bold" fill="#ffffff">Marcus's</text>
+  <text x="480" y="370" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="bold" fill="#ffffff">Bicycle Shop</text>
+  <text x="480" y="440" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="#93c5fd">Custom Bicycle Configurator</text>
+  <text x="480" y="490" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#bfdbfe">Build your dream bike with dynamic pricing</text>
+
+  <rect x="480" y="520" width="200" height="50" rx="8" fill="#ffffff"/>
+  <text x="515" y="555" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="600" fill="#1e40af">Start Building →</text>
+</svg>

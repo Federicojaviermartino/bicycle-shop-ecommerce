@@ -101,6 +101,13 @@ function App() {
             </div>
             <div className="app__header-buttons">
               <button
+                className="app__signin-button"
+                onClick={() => toast.info('Customer accounts coming soon!')}
+                aria-label="Sign in to your account"
+              >
+                Sign In
+              </button>
+              <button
                 className="app__cart-button"
                 onClick={() => setCurrentView(currentView === 'customer' ? 'admin' : 'customer')}
                 aria-label={

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import type { Cart } from '../../types';
+import type { Cart, PromoCode } from '../../types';
 import { apiService } from '../../services/api';
+import { promoService } from '../../services/promoService';
 import { toast, Spinner } from '../common';
+import { OrderTracking } from '../order';
 
 type CheckoutStep = 'shipping' | 'payment' | 'confirmation';
 
@@ -55,6 +57,13 @@ export function Checkout({ cartId, onClose, onOrderComplete }: CheckoutProps) {
   const [shippingInfo, setShippingInfo] = useState<ShippingInfo>(initialShippingInfo);
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>(initialPaymentInfo);
   const [orderNumber, setOrderNumber] = useState<string>('');
+  const [showOrderTracking, setShowOrderTracking] = useState(false);
+  const [promoCodeInput, setPromoCodeInput] = useState('');
+  const [appliedPromo, setAppliedPromo] = useState<PromoCode | null>(null);
+  const [discountAmount, setDiscountAmount] = useState(0);
+
+  const subtotal = cart?.totalAmount || 0;
+  const finalTotal = Math.max(0, subtotal - discountAmount);
 
   useEffect(() => {
     loadCart();
@@ -127,11 +136,47 @@ export function Checkout({ cartId, onClose, onOrderComplete }: CheckoutProps) {
     return true;
   };
 
+  const handleApplyPromoCode = () => {
+    if (!promoCodeInput.trim()) {
+      toast.warning('Please enter a promo code');
+      return;
+    }
+
+    const validation = promoService.validatePromoCode(promoCodeInput, subtotal);
+
+    if (!validation.isValid) {
+      toast.error(validation.error || 'Invalid promo code');
+      return;
+    }
+
+    setAppliedPromo(validation.promoCode!);
+    setDiscountAmount(validation.discountAmount);
+    toast.success(`Promo code applied! You save €${validation.discountAmount.toFixed(2)}`);
+  };
+
+  const handleRemovePromoCode = () => {
+    setAppliedPromo(null);
+    setDiscountAmount(0);
+    setPromoCodeInput('');
+    toast.success('Promo code removed');
+  };
+
   const handleShippingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateShipping()) {
       setStep('payment');
     }
+  };
+
+  const getEstimatedDelivery = (): string => {
+    const date = new Date();
+    date.setDate(date.getDate() + 7);
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
   };
 
   const handlePaymentSubmit = async (e: React.FormEvent) => {
@@ -140,14 +185,34 @@ export function Checkout({ cartId, onClose, onOrderComplete }: CheckoutProps) {
 
     setProcessing(true);
     try {
-      // Simulate payment processing
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Generate order number
       const newOrderNumber = `ORD-${Date.now().toString(36).toUpperCase()}`;
       setOrderNumber(newOrderNumber);
 
-      // Clear cart
+      const orderData = {
+        orderNumber: newOrderNumber,
+        status: 'confirmed',
+        customerName: `${shippingInfo.firstName} ${shippingInfo.lastName}`,
+        email: shippingInfo.email,
+        shippingAddress: {
+          street: shippingInfo.address,
+          city: shippingInfo.city,
+          postalCode: shippingInfo.postalCode,
+          country: shippingInfo.country,
+        },
+        items:
+          cart?.items.map((item) => ({
+            name: item.product?.name || 'Custom Bicycle Configuration',
+            quantity: item.quantity,
+            price: item.unitPrice,
+          })) || [],
+        totalAmount: cart?.totalAmount || 0,
+        createdAt: new Date().toISOString(),
+        estimatedDelivery: getEstimatedDelivery(),
+      };
+      localStorage.setItem(`order-${newOrderNumber}`, JSON.stringify(orderData));
+
       localStorage.removeItem('bicycle-shop-cart-id');
 
       toast.success('Order placed successfully!');
@@ -449,7 +514,7 @@ export function Checkout({ cartId, onClose, onOrderComplete }: CheckoutProps) {
                         <Spinner size="sm" /> Processing...
                       </>
                     ) : (
-                      `Pay €${cart.totalAmount.toFixed(2)}`
+                      `Pay €${finalTotal.toFixed(2)}`
                     )}
                   </button>
                 </div>
@@ -488,10 +553,22 @@ export function Checkout({ cartId, onClose, onOrderComplete }: CheckoutProps) {
                   <h4>Estimated Delivery</h4>
                   <p>5-7 business days</p>
                 </div>
-                <button className="btn btn--primary" onClick={onOrderComplete}>
-                  Continue Shopping
-                </button>
+                <div className="checkout__confirmation-actions">
+                  <button className="btn btn--secondary" onClick={() => setShowOrderTracking(true)}>
+                    Track Order
+                  </button>
+                  <button className="btn btn--primary" onClick={onOrderComplete}>
+                    Continue Shopping
+                  </button>
+                </div>
               </div>
+            )}
+
+            {showOrderTracking && (
+              <OrderTracking
+                orderNumber={orderNumber}
+                onClose={() => setShowOrderTracking(false)}
+              />
             )}
           </div>
 
@@ -513,17 +590,61 @@ export function Checkout({ cartId, onClose, onOrderComplete }: CheckoutProps) {
                   </div>
                 ))}
               </div>
+
+              <div className="checkout__promo">
+                <label className="checkout__promo-label">Have a promo code?</label>
+                {appliedPromo ? (
+                  <div className="checkout__promo-applied">
+                    <div className="checkout__promo-badge">
+                      <span className="checkout__promo-code">{appliedPromo.code}</span>
+                      <span className="checkout__promo-desc">{appliedPromo.description}</span>
+                    </div>
+                    <button
+                      type="button"
+                      className="checkout__promo-remove"
+                      onClick={handleRemovePromoCode}
+                      aria-label="Remove promo code"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <div className="checkout__promo-input">
+                    <input
+                      type="text"
+                      placeholder="Enter code"
+                      value={promoCodeInput}
+                      onChange={(e) => setPromoCodeInput(e.target.value.toUpperCase())}
+                      onKeyDown={(e) => e.key === 'Enter' && handleApplyPromoCode()}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn--secondary checkout__promo-btn"
+                      onClick={handleApplyPromoCode}
+                    >
+                      Apply
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <div className="checkout__summary-row">
                 <span>Subtotal</span>
-                <span>€{cart.totalAmount.toFixed(2)}</span>
+                <span>€{subtotal.toFixed(2)}</span>
               </div>
+              {discountAmount > 0 && (
+                <div className="checkout__summary-row checkout__summary-discount">
+                  <span>Discount ({appliedPromo?.code})</span>
+                  <span>-€{discountAmount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="checkout__summary-row">
                 <span>Shipping</span>
                 <span className="checkout__free">FREE</span>
               </div>
               <div className="checkout__summary-row checkout__summary-total">
                 <span>Total</span>
-                <span>€{cart.totalAmount.toFixed(2)}</span>
+                <span>€{finalTotal.toFixed(2)}</span>
               </div>
             </div>
           )}
