@@ -168,6 +168,18 @@ function ProductForm({ product, onSave, onCancel, loading }: ProductFormProps) {
     basePrice: product?.basePrice || 0,
     isActive: product?.isActive ?? true,
   });
+
+  // Handle Escape key to close modal
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onCancel();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onCancel]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim()) {

@@ -7,7 +7,7 @@ interface ShoppingCartProps {
   cartId: string;
   isVisible: boolean;
   onClose: () => void;
-  refreshTrigger?: number; // Add this to trigger refreshes
+  refreshTrigger?: number;
 }
 export function ShoppingCart({ cartId, isVisible, onClose }: ShoppingCartProps) {
   const [cart, setCart] = useState<Cart | null>(null);
@@ -30,6 +30,27 @@ export function ShoppingCart({ cartId, isVisible, onClose }: ShoppingCartProps) 
       loadCart();
     }
   }, [isVisible, cartId, loadCart]);
+
+  // Handle Escape key to close modal
+  useEffect(() => {
+    if (!isVisible) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isVisible, onClose]);
+
+  // Handle click outside to close modal
+  const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
   const handleUpdateQuantity = async (itemId: string, quantity: number) => {
     try {
       const response = await apiService.updateCartItem(cartId, itemId, quantity);
@@ -65,6 +86,7 @@ export function ShoppingCart({ cartId, isVisible, onClose }: ShoppingCartProps) 
       role="dialog"
       aria-modal="true"
       aria-labelledby="cart-title"
+      onClick={handleOverlayClick}
     >
       <div className="shopping-cart">
         <div className="shopping-cart__header">

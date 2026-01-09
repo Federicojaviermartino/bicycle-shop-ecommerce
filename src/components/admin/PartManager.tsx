@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { PartType, PartOption } from '../../backend/types/domain';
 interface UIConstraintRule {
   id: string;
@@ -192,6 +192,19 @@ export function PartManager() {
     setIsModalOpen(false);
     setEditingOption(null);
   };
+
+  // Handle Escape key to close modal
+  useEffect(() => {
+    if (!isModalOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        handleCloseModal();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isModalOpen]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingOption) {
@@ -498,6 +511,19 @@ export function PricingRuleManager() {
     setIsModalOpen(false);
     setEditingRule(null);
   };
+
+  // Handle Escape key to close modal
+  useEffect(() => {
+    if (!isModalOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        handleCloseModal();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isModalOpen]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingRule) {
@@ -746,6 +772,19 @@ export function ConstraintManager() {
     setIsModalOpen(false);
     setEditingConstraint(null);
   };
+
+  // Handle Escape key to close modal
+  useEffect(() => {
+    if (!isModalOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        handleCloseModal();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isModalOpen]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingConstraint) {
