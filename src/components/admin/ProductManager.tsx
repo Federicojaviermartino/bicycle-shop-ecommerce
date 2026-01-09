@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Product } from '../../types';
+import { toast } from '../common';
 
 export function ProductManager() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -52,7 +53,7 @@ export function ProductManager() {
       setEditingProduct(null);
     } catch (error) {
       console.error('Failed to save product:', error);
-      alert('Failed to save product');
+      toast.error('Failed to save product');
     } finally {
       setLoading(false);
     }
@@ -64,7 +65,7 @@ export function ProductManager() {
       setProducts((prev) => prev.filter((p) => p.id !== productId));
     } catch (error) {
       console.error('Failed to delete product:', error);
-      alert('Failed to delete product');
+      toast.error('Failed to delete product');
     } finally {
       setLoading(false);
     }
@@ -170,11 +171,11 @@ function ProductForm({ product, onSave, onCancel, loading }: ProductFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim()) {
-      alert('Product name is required');
+      toast.warning('Product name is required');
       return;
     }
     if (formData.basePrice < 0) {
-      alert('Base price must be positive');
+      toast.warning('Base price must be positive');
       return;
     }
     onSave(formData);

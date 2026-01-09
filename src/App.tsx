@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { ProductConfigurator } from './components/product/ProductConfigurator';
 import { ShoppingCart } from './components/cart/ShoppingCart';
 import { AdminDashboard } from './components/admin/AdminDashboard';
-import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { ErrorBoundary, toast } from './components/common';
 import { apiService } from './services/api';
 import './App.css';
 
@@ -43,14 +43,14 @@ function App() {
       const result = await apiService.addToCart(cartId, configurationId, 1);
 
       if (result.success) {
-        alert('Product added to cart!');
+        toast.success('Product added to cart!');
         updateCartCount();
         setIsCartVisible(true);
       } else {
-        alert('Failed to add product to cart: ' + result.error);
+        toast.error('Failed to add product to cart: ' + result.error);
       }
     } catch {
-      alert('Error adding product to cart');
+      toast.error('Error adding product to cart');
     }
   };
 
@@ -70,6 +70,9 @@ function App() {
   return (
     <ErrorBoundary>
       <div className="app">
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         <header className="app__header">
           <div className="app__header-content">
             <div>
@@ -80,6 +83,9 @@ function App() {
               <button
                 className="app__cart-button"
                 onClick={() => setCurrentView(currentView === 'customer' ? 'admin' : 'customer')}
+                aria-label={
+                  currentView === 'customer' ? 'Go to admin panel' : 'Go to customer view'
+                }
               >
                 {currentView === 'customer' ? 'Admin' : 'Customer View'}
               </button>
@@ -87,15 +93,20 @@ function App() {
                 <button
                   className="app__cart-button app__cart-button--with-badge"
                   onClick={() => setIsCartVisible(true)}
+                  aria-label={`Shopping cart${cartItemCount > 0 ? `, ${cartItemCount} items` : ', empty'}`}
                 >
                   Cart
-                  {cartItemCount > 0 && <span className="app__cart-badge">{cartItemCount}</span>}
+                  {cartItemCount > 0 && (
+                    <span className="app__cart-badge" aria-hidden="true">
+                      {cartItemCount}
+                    </span>
+                  )}
                 </button>
               )}
             </div>
           </div>
         </header>
-        <main className="app__main">
+        <main id="main-content" className="app__main">
           <div className="app__intro">
             <h2>Customize Your Dream Bicycle</h2>
             <p>

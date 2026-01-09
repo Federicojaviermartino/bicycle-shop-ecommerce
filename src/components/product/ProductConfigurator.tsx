@@ -3,6 +3,7 @@ import { useProductConfiguration } from '../../hooks/useProductConfiguration';
 import { PartSelector } from './PartSelector';
 import { PricingSummary } from './PricingSummary';
 import { apiService } from '../../services/api';
+import { toast, LoadingOverlay } from '../common';
 
 interface ProductConfiguratorProps {
   productId: string;
@@ -31,17 +32,21 @@ export function ProductConfigurator({ productId, onAddToCart }: ProductConfigura
       if (response.success && response.data) {
         onAddToCart(response.data.id);
       } else {
-        alert('Failed to create configuration: ' + response.error);
+        toast.error('Failed to create configuration: ' + response.error);
       }
     } catch {
-      alert('Error adding to cart');
+      toast.error('Error adding to cart');
     } finally {
       setIsAddingToCart(false);
     }
   };
 
   if (loading) {
-    return <div className="product-configurator__loading">Loading configuration options...</div>;
+    return (
+      <div className="product-configurator">
+        <LoadingOverlay text="Loading configuration options..." />
+      </div>
+    );
   }
 
   return (

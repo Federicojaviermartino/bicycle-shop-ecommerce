@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import type { Cart } from '../../types';
 import { CartItemComponent } from './CartItem';
 import { apiService } from '../../services/api';
+import { toast, Spinner } from '../common';
 interface ShoppingCartProps {
   cartId: string;
   isVisible: boolean;
@@ -36,7 +37,7 @@ export function ShoppingCart({ cartId, isVisible, onClose }: ShoppingCartProps) 
         setCart(response.data);
       }
     } catch {
-      alert('Failed to update quantity');
+      toast.error('Failed to update quantity');
     }
   };
   const handleRemoveItem = async (itemId: string) => {
@@ -45,28 +46,43 @@ export function ShoppingCart({ cartId, isVisible, onClose }: ShoppingCartProps) 
 
       if (response.success && response.data) {
         setCart(response.data);
+        toast.success('Item removed from cart');
       } else {
-        alert('Failed to remove item: ' + (response.error || 'Unknown error'));
+        toast.error('Failed to remove item: ' + (response.error || 'Unknown error'));
       }
     } catch (error) {
-      alert('Failed to remove item: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      toast.error(
+        'Failed to remove item: ' + (error instanceof Error ? error.message : 'Unknown error')
+      );
     }
   };
 
   if (!isVisible) return null;
 
   return (
-    <div className="shopping-cart-overlay">
+    <div
+      className="shopping-cart-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cart-title"
+    >
       <div className="shopping-cart">
         <div className="shopping-cart__header">
-          <h2>Shopping Cart</h2>
-          <button onClick={onClose} className="shopping-cart__close">
+          <h2 id="cart-title">Shopping Cart</h2>
+          <button
+            onClick={onClose}
+            className="shopping-cart__close"
+            aria-label="Close shopping cart"
+          >
             ×
           </button>
         </div>
         <div className="shopping-cart__content">
           {loading ? (
-            <div className="shopping-cart__loading">Loading cart...</div>
+            <div className="shopping-cart__loading">
+              <Spinner size="lg" />
+              <span style={{ marginTop: '0.5rem' }}>Loading cart...</span>
+            </div>
           ) : !cart || cart.items.length === 0 ? (
             <div className="shopping-cart__empty">
               <p>Your cart is empty</p>
