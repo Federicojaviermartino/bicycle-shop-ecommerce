@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { ProductManager } from './ProductManager.tsx';
 import { PartManager, PricingRuleManager, ConstraintManager } from './PartManager.tsx';
+import { OrdersManager } from './OrdersManager.tsx';
+import { AnalyticsDashboard } from './AnalyticsDashboard.tsx';
 type AdminTab = 'products' | 'parts' | 'pricing' | 'constraints' | 'orders' | 'analytics';
 interface AdminDashboardProps {
   onBackToCustomer?: () => void;
@@ -26,45 +28,9 @@ export function AdminDashboard({ onBackToCustomer }: AdminDashboardProps) {
       case 'constraints':
         return <ConstraintManager />;
       case 'orders':
-        return (
-          <div className="admin-content">
-            <div className="admin-content__header">
-              <h2 className="admin-content__title">Orders Management</h2>
-            </div>
-            <div className="admin-content__body">
-              <div className="admin-content__coming-soon">
-                <h3>Orders Management - Coming Soon</h3>
-                <p>This section will include:</p>
-                <ul>
-                  <li>View and manage customer orders</li>
-                  <li>Order status tracking</li>
-                  <li>Order fulfillment workflow</li>
-                  <li>Customer communication tools</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        );
+        return <OrdersManager />;
       case 'analytics':
-        return (
-          <div className="admin-content">
-            <div className="admin-content__header">
-              <h2 className="admin-content__title">Analytics Dashboard</h2>
-            </div>
-            <div className="admin-content__body">
-              <div className="admin-content__coming-soon">
-                <h3>Analytics Dashboard - Coming Soon</h3>
-                <p>This section will include:</p>
-                <ul>
-                  <li>Sales performance metrics</li>
-                  <li>Popular product configurations</li>
-                  <li>Customer behavior insights</li>
-                  <li>Revenue and profit reports</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        );
+        return <AnalyticsDashboard />;
       default:
         return (
           <div className="admin-content">
@@ -80,8 +46,8 @@ export function AdminDashboard({ onBackToCustomer }: AdminDashboardProps) {
                   <li>Parts & Options - Manage customizable components</li>
                   <li>Pricing Rules - Set dynamic pricing logic</li>
                   <li>Constraints - Define business rules</li>
-                  <li>Orders - Handle customer orders (coming soon)</li>
-                  <li>Analytics - View performance data (coming soon)</li>
+                  <li>Orders - Manage customer orders</li>
+                  <li>Analytics - View performance metrics</li>
                 </ul>
               </div>
             </div>
