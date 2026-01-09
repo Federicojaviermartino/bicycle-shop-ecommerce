@@ -2,6 +2,12 @@ import type { PartType, PartOption } from '../../types';
 
 const LOW_STOCK_THRESHOLD = 10;
 
+const COLOR_SWATCHES: Record<string, string> = {
+  'red-rim': '#dc2626',
+  'black-rim': '#1f2937',
+  'blue-rim': '#2563eb',
+};
+
 interface PartSelectorProps {
   partType: PartType;
   options: PartOption[];
@@ -42,7 +48,14 @@ export function PartSelector({
               onClick={() => onSelectionChange(partType.id, option.id)}
             >
               <div className="part-option__content">
-                {option.imageUrl && (
+                {COLOR_SWATCHES[option.id] && (
+                  <span
+                    className="part-option__color-swatch"
+                    style={{ backgroundColor: COLOR_SWATCHES[option.id] }}
+                    aria-hidden="true"
+                  />
+                )}
+                {option.imageUrl && !COLOR_SWATCHES[option.id] && (
                   <img src={option.imageUrl} alt={option.name} className="part-option__image" />
                 )}
                 <div className="part-option__details">

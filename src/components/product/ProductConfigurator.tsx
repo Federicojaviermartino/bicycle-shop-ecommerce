@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useProductConfiguration } from '../../hooks/useProductConfiguration';
 import { PartSelector } from './PartSelector';
 import { PricingSummary } from './PricingSummary';
+import { ProductImage } from './ProductImage';
 import { apiService } from '../../services/api';
 import { toast, LoadingOverlay } from '../common';
 
@@ -64,6 +65,9 @@ export function ProductConfigurator({ productId, onAddToCart }: ProductConfigura
 
   return (
     <div className="product-configurator">
+      <div className="product-configurator__header">
+        <ProductImage selections={selections} productName={product?.name} />
+      </div>
       <div className="product-configurator__main">
         <div className="product-configurator__parts">
           <h2>Customize Your Product</h2>
