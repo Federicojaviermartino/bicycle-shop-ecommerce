@@ -7,9 +7,15 @@ interface ShoppingCartProps {
   cartId: string;
   isVisible: boolean;
   onClose: () => void;
+  onProceedToCheckout?: () => void;
   refreshTrigger?: number;
 }
-export function ShoppingCart({ cartId, isVisible, onClose }: ShoppingCartProps) {
+export function ShoppingCart({
+  cartId,
+  isVisible,
+  onClose,
+  onProceedToCheckout,
+}: ShoppingCartProps) {
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -182,7 +188,9 @@ export function ShoppingCart({ cartId, isVisible, onClose }: ShoppingCartProps) 
                   <button className="btn btn--secondary" onClick={onClose}>
                     Continue Shopping
                   </button>
-                  <button className="btn btn--primary">Proceed to Checkout</button>
+                  <button className="btn btn--primary" onClick={onProceedToCheckout}>
+                    Proceed to Checkout
+                  </button>
                 </div>
               </div>
             </>

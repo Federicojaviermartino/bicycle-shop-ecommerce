@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ProductConfigurator } from './components/product/ProductConfigurator';
 import { ShoppingCart } from './components/cart/ShoppingCart';
+import { Checkout } from './components/checkout';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { ErrorBoundary, toast } from './components/common';
 import { apiService } from './services/api';
@@ -11,6 +12,7 @@ type AppView = 'customer' | 'admin';
 function App() {
   const [currentView, setCurrentView] = useState<AppView>('customer');
   const [isCartVisible, setIsCartVisible] = useState(false);
+  const [isCheckoutVisible, setIsCheckoutVisible] = useState(false);
   const [cartItemCount, setCartItemCount] = useState(0);
   const [cartId] = useState(() => {
     const storedCartId = localStorage.getItem('bicycle-shop-cart-id');
@@ -57,6 +59,24 @@ function App() {
   const handleCartClose = () => {
     setIsCartVisible(false);
     updateCartCount();
+  };
+
+  const handleProceedToCheckout = () => {
+    setIsCartVisible(false);
+    setIsCheckoutVisible(true);
+  };
+
+  const handleCheckoutClose = () => {
+    setIsCheckoutVisible(false);
+  };
+
+  const handleOrderComplete = () => {
+    setIsCheckoutVisible(false);
+    setCartItemCount(0);
+    // Generate new cart ID for next session
+    const newCartId = 'cart-' + Date.now();
+    localStorage.setItem('bicycle-shop-cart-id', newCartId);
+    window.location.reload();
   };
 
   if (currentView === 'admin') {
@@ -117,7 +137,19 @@ function App() {
           </div>
           <ProductConfigurator productId="demo-bicycle-1" onAddToCart={handleAddToCart} />
         </main>
-        <ShoppingCart cartId={cartId} isVisible={isCartVisible} onClose={handleCartClose} />
+        <ShoppingCart
+          cartId={cartId}
+          isVisible={isCartVisible}
+          onClose={handleCartClose}
+          onProceedToCheckout={handleProceedToCheckout}
+        />
+        {isCheckoutVisible && (
+          <Checkout
+            cartId={cartId}
+            onClose={handleCheckoutClose}
+            onOrderComplete={handleOrderComplete}
+          />
+        )}
         <footer className="app__footer">
           <p>&copy; 2025 Marcus's Bicycle Shop. Quality bicycles, built to order.</p>
         </footer>
