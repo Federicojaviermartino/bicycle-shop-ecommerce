@@ -193,16 +193,15 @@ function ProductForm({ product, onSave, onCancel, loading }: ProductFormProps) {
     onSave(formData);
   };
   return (
-    <div className="admin-modal">
-      <div className="admin-modal__backdrop" onClick={onCancel} />
-      <div className="admin-modal__content">
+    <div className="admin-modal-overlay" onClick={onCancel}>
+      <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
         <div className="admin-modal__header">
           <h3 className="admin-modal__title">{product ? 'Edit Product' : 'Create New Product'}</h3>
           <button className="admin-modal__close" onClick={onCancel}>
-            ✕
+            ×
           </button>
         </div>
-        <form className="admin-form" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="admin-modal__form">
           <div className="admin-form__group">
             <label className="admin-form__label">Product Name *</label>
             <input
@@ -229,38 +228,40 @@ function ProductForm({ product, onSave, onCancel, loading }: ProductFormProps) {
               disabled={loading}
             />
           </div>
-          <div className="admin-form__group">
-            <label className="admin-form__label">Category</label>
-            <select
-              className="admin-form__select"
-              value={formData.categoryId}
-              onChange={(e) => setFormData((prev) => ({ ...prev, categoryId: e.target.value }))}
-              disabled={loading}
-            >
-              <option value="bicycles">Bicycles</option>
-              <option value="skis">Skis</option>
-              <option value="surfboards">Surfboards</option>
-            </select>
+          <div className="admin-form__row">
+            <div className="admin-form__group">
+              <label className="admin-form__label">Category</label>
+              <select
+                className="admin-form__select"
+                value={formData.categoryId}
+                onChange={(e) => setFormData((prev) => ({ ...prev, categoryId: e.target.value }))}
+                disabled={loading}
+              >
+                <option value="bicycles">Bicycles</option>
+                <option value="skis">Skis</option>
+                <option value="surfboards">Surfboards</option>
+              </select>
+            </div>
+            <div className="admin-form__group">
+              <label className="admin-form__label">Base Price (€) *</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                className="admin-form__input"
+                value={formData.basePrice}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    basePrice: parseFloat(e.target.value) || 0,
+                  }))
+                }
+                required
+                disabled={loading}
+              />
+            </div>
           </div>
           <div className="admin-form__group">
-            <label className="admin-form__label">Base Price (€) *</label>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              className="admin-form__input"
-              value={formData.basePrice}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  basePrice: parseFloat(e.target.value) || 0,
-                }))
-              }
-              required
-              disabled={loading}
-            />
-          </div>
-          <div className="admin-form__group admin-form__group--checkbox">
             <label className="admin-form__checkbox-label">
               <input
                 type="checkbox"
@@ -274,13 +275,13 @@ function ProductForm({ product, onSave, onCancel, loading }: ProductFormProps) {
                 }
                 disabled={loading}
               />
-              <span className="admin-form__checkbox-text">Product is active</span>
+              Active
             </label>
           </div>
-          <div className="admin-form__actions">
+          <div className="admin-modal__actions">
             <button
               type="button"
-              className="admin-form__btn admin-form__btn--secondary"
+              className="admin-modal__btn admin-modal__btn--cancel"
               onClick={onCancel}
               disabled={loading}
             >
@@ -288,7 +289,7 @@ function ProductForm({ product, onSave, onCancel, loading }: ProductFormProps) {
             </button>
             <button
               type="submit"
-              className="admin-form__btn admin-form__btn--primary"
+              className="admin-modal__btn admin-modal__btn--save"
               disabled={loading}
             >
               {loading ? 'Saving...' : product ? 'Update Product' : 'Create Product'}
